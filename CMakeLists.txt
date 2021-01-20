@@ -7,3 +7,4 @@ target_sources(${PROJECT_NAME} INTERFACE ${hdrs})
 target_include_directories(${PROJECT_NAME} INTERFACE src)
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_17)
 
+target_include_directories(${PROJECT_NAME} INTERFACE deps/magnum-singles)
