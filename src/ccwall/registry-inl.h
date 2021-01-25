@@ -4,16 +4,17 @@
 #include "ccwall/hiter-inl.h"
 #include "ccwall/pimpl-inl.h"
 
-#include <map>
-#include <string>
 #include <stdexcept>
+#include <string>
+#include <set>
+#include <unordered_map>
 
 namespace ccwall {
 
   template <typename DerivedOuter, typename T>
   struct RegistryImpl {
-    std::map<std::string, std::string, std::less<>> mDesc;
-    std::map<std::string, T, std::less<>> mObj;
+    std::set<std::string> sKey;
+    std::unordered_map<std::string, std::pair<std::string, T>> mObj;
   };
 
   template <class Derived, typename T>
@@ -28,8 +29,8 @@ namespace ccwall {
   template <class Derived, typename T>
   void Registry<Derived, T>::add(const std::string& name, const T& obj, const std::string& desc) {
     if (!has(name)) {
-      pimpl->mObj.emplace(name, obj);
-      pimpl->mDesc.emplace(name, desc);
+      pimpl->sKey.emplace(name);
+      pimpl->mObj.emplace(name, std::pair(desc, obj));
     } else {
       throw std::invalid_argument(name);
     }
@@ -42,12 +43,29 @@ namespace ccwall {
 
   template <class Derived, typename T>
   size_t Registry<Derived, T>::size() {
-    return pimpl->mObj.size();
+    return pimpl->sKey.size();
   }
 
   template <class Derived, typename T>
   const T& Registry<Derived, T>::get(const std::string& name) {
-    return pimpl->mObj.at(name);
+    return pimpl->mObj.at(name).second;
+  }
+
+  template <class Derived, typename T>
+  const std::string& Registry<Derived, T>::getDesc(const std::string& name) {
+    return pimpl->mObj.at(name).first;
+  }
+
+  template <class Derived, typename T>
+  typename Registry<Derived, T>::Iter Registry<Derived, T>::begin() const {
+    auto itr = pimpl->sKey.begin();
+    return Iter(&itr);
+  }
+
+  template <class Derived, typename T>
+  typename Registry<Derived, T>::Iter Registry<Derived, T>::end() const {
+    auto itr = pimpl->sKey.end();
+    return Iter(&itr);
   }
 
 }

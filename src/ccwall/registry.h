@@ -3,8 +3,8 @@
 #include "ccwall/hiter.h"
 #include "ccwall/pimpl.h"
 
-#include <cstddef> // for size_t
 #include "CorradeStlForwardString.h"
+#include <cstddef> // for size_t
 
 namespace ccwall {
 
@@ -16,7 +16,13 @@ namespace ccwall {
     size_t size();
 
     const T& get(const std::string& name);
-    std::string getDesc(const std::string& name);
+    const std::string& getDesc(const std::string& name);
+
+    struct Iter : public HiddenIter<Iter, const std::string> {
+      using HiddenIter<Iter, const std::string>::HiddenIter;
+    };
+    Iter begin() const;
+    Iter end() const;
 
     Registry();
     ~Registry();
@@ -25,12 +31,9 @@ namespace ccwall {
     // No copy for registry class
     Registry(const Registry& rhs) = delete;
     Registry& operator=(const Registry& rhs) = delete;
-
-    class Iter;
-    Iter begin() const;
-    Iter end() const;
   private:
     class Impl; PImpl<Impl> pimpl;
   }; // end Registry class
+
 
 }
