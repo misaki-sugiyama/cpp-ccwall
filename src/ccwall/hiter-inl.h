@@ -54,7 +54,7 @@ namespace ccwall {
 
   template <class Derived, typename T>
   bool HiddenIter<Derived, T>::operator==(const HiddenIter& rhs) const {
-    return *pimpl == *rhs.pimpl;
+    return *(static_cast<const Derived&>(*this)).pimpl == *(static_cast<const Derived&>(rhs)).pimpl;
   }
 
   template <class Derived, typename T>
@@ -64,7 +64,7 @@ namespace ccwall {
 
   template <class Derived, typename T>
   HiddenIter<Derived, T>& HiddenIter<Derived, T>::operator++() {
-    ++(*pimpl);
+    ++(*(static_cast<Derived&>(*this)).pimpl);
     return *this;
   }
 
@@ -78,5 +78,47 @@ namespace ccwall {
     return &**(static_cast<const Derived&>(*this)).pimpl;
   }
 
+  // === Bi-directional things ===
+
+  template <class Derived, typename T>
+  HiddenIterBi<Derived, T>::HiddenIterBi() : pimpl{} {}
+
+  template <class Derived, typename T>
+  HiddenIterBi<Derived, T>::HiddenIterBi(const void *pItr) : pimpl{pItr} {}
+
+  template <class Derived, typename T>
+  HiddenIterBi<Derived, T>::~HiddenIterBi() {}
+
+  template <class Derived, typename T>
+  bool HiddenIterBi<Derived, T>::operator==(const HiddenIterBi& rhs) const {
+    return *(static_cast<const Derived&>(*this)).pimpl == *(static_cast<const Derived&>(rhs)).pimpl;
+  }
+
+  template <class Derived, typename T>
+  bool HiddenIterBi<Derived, T>::operator!=(const HiddenIterBi& rhs) const {
+    return !(this->operator==(rhs));
+  }
+
+  template <class Derived, typename T>
+  HiddenIterBi<Derived, T>& HiddenIterBi<Derived, T>::operator++() {
+    ++(*(static_cast<Derived&>(*this)).pimpl);
+    return *this;
+  }
+
+  template <class Derived, typename T>
+  HiddenIterBi<Derived, T>& HiddenIterBi<Derived, T>::operator--() {
+    --(*(static_cast<Derived&>(*this)).pimpl);
+    return *this;
+  }
+
+  template <class Derived, typename T>
+  const typename HiddenIterBi<Derived,T>::value_type& HiddenIterBi<Derived,T>::operator*() const {
+    return **(static_cast<const Derived&>(*this)).pimpl;
+  }
+
+  template <class Derived, typename T>
+  const typename HiddenIterBi<Derived,T>::value_type* HiddenIterBi<Derived,T>::operator->() const {
+    return &**(static_cast<const Derived&>(*this)).pimpl;
+  }
 
 }

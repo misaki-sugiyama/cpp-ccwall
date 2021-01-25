@@ -68,4 +68,16 @@ namespace ccwall {
     return Iter(&itr);
   }
 
+  template <class Derived, typename T>
+  typename Registry<Derived, T>::IterRev Registry<Derived, T>::rbegin() const {
+    auto itr = pimpl->sKey.rbegin();
+    return IterRev(&itr);
+  }
+
+  template <class Derived, typename T>
+  typename Registry<Derived, T>::IterRev Registry<Derived, T>::rend() const {
+    auto itr = pimpl->sKey.rend();
+    return IterRev(&itr);
+  }
+
 }

@@ -18,11 +18,16 @@ namespace ccwall {
     const T& get(const std::string& name);
     const std::string& getDesc(const std::string& name);
 
-    struct Iter : public HiddenIter<Iter, const std::string> {
-      using HiddenIter<Iter, const std::string>::HiddenIter;
+    struct Iter : public HiddenIterBi<Iter, const std::string> {
+      using HiddenIterBi<Iter, const std::string>::HiddenIterBi;
     };
     Iter begin() const;
     Iter end() const;
+    struct IterRev : public HiddenIterBi<IterRev, const std::string> {
+      using HiddenIterBi<IterRev, const std::string>::HiddenIterBi;
+    };
+    IterRev rbegin() const;
+    IterRev rend() const;
 
     Registry();
     ~Registry();

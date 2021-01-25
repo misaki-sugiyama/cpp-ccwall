@@ -64,6 +64,17 @@ SCENARIO("Int registry", "[reg]") {
       REQUIRE(itrBegin == itrEnd);
     }
 
+    THEN("Reverse iterators can be used to go through the registry") {
+      auto itrBegin {reg.rbegin()}, itrEnd {reg.rend()};
+      REQUIRE_THAT(*itrBegin, Equals("name2"));
+      REQUIRE(itrBegin != itrEnd);
+      ++itrBegin;
+      REQUIRE_THAT(*itrBegin, Equals("name1"));
+      REQUIRE(itrBegin != itrEnd);
+      ++itrBegin;
+      REQUIRE(itrBegin == itrEnd);
+    }
+
     THEN("Range-based for is supported") {
       std::vector<std::string> aAnswer {"name1", "name2"};
       auto itrAnswer {aAnswer.begin()};
